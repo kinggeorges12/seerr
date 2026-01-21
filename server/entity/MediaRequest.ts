@@ -162,7 +162,7 @@ export class MediaRequest {
       .createQueryBuilder('request')
       .leftJoin('request.media', 'media')
       .leftJoinAndSelect('request.requestedBy', 'user')
-      .where('request.is4k = :is4k', { is4k: requestBody.is4k })
+      .where('request.is4k = :is4k', { is4k: requestBody.is4k == true })
       .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
       .andWhere('media.mediaType = :mediaType', {
         mediaType: requestBody.mediaType,
@@ -202,7 +202,7 @@ export class MediaRequest {
     }
 
     // Apply overrides if the user is not an admin or has the "advanced request" permission
-    const useOverrides = !requestUser.hasPermission([Permission.MANAGE_REQUESTS], {
+    const useOverrides = !user.hasPermission([Permission.MANAGE_REQUESTS], {
       type: 'or',
     });
 
@@ -337,7 +337,7 @@ export class MediaRequest {
         media,
         requestedBy: requestUser,
         // If the user is an admin or has the "auto approve" permission, automatically approve the request
-        status: requestUser.hasPermission(
+        status: user.hasPermission(
           [
             requestBody.is4k
               ? Permission.AUTO_APPROVE_4K
@@ -447,7 +447,7 @@ export class MediaRequest {
         media,
         requestedBy: requestUser,
         // If the user is an admin or has the "auto approve" permission, automatically approve the request
-        status: requestUser.hasPermission(
+        status: user.hasPermission(
           [
             requestBody.is4k
               ? Permission.AUTO_APPROVE_4K
@@ -485,7 +485,7 @@ export class MediaRequest {
           (sn) =>
             new SeasonRequest({
               seasonNumber: sn,
-              status: requestUser.hasPermission(
+              status: user.hasPermission(
                 [
                   requestBody.is4k
                     ? Permission.AUTO_APPROVE_4K
