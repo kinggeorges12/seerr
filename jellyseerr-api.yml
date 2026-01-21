@@ -4271,6 +4271,61 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaRequest'
+  /user/{userId}/request:
+    post:
+      summary: Create new request for a specific user
+      description: |
+        Creates a new request for a specific user with the provided media ID and type. The `ADMIN` permission is required for the authenticated user.
+
+        If the user specified by the path parameter has the `ADMIN` or `AUTO_APPROVE` permissions, their request will be auomatically approved.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mediaType:
+                  type: string
+                  enum: [movie, tv]
+                  example: movie
+                mediaId:
+                  type: number
+                  example: 123
+                tvdbId:
+                  type: number
+                  example: 123
+                seasons:
+                  oneOf:
+                    - type: array
+                      items:
+                        type: number
+                        minimum: 0
+                    - type: string
+                      enum: [all]
+                is4k:
+                  type: boolean
+                  example: false
+                serverId:
+                  type: number
+                profileId:
+                  type: number
+                rootFolder:
+                  type: string
+                languageProfileId:
+                  type: number
+              required:
+                - mediaType
+                - mediaId
+      responses:
+        '201':
+          description: Succesfully created the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaRequest'
   /user/{userId}/quota:
     get:
       summary: Get quotas for a specific user
@@ -5886,7 +5941,7 @@ paths:
     post:
       summary: Create new request
       description: |
-        Creates a new request with the provided media ID and type. The `REQUEST` permission is required.
+        Creates a new request with the provided media ID and type. The `MANAGE_USERS` and `MANAGE_REQUESTS` permissions are required.
 
         If the user has the `ADMIN` or `AUTO_APPROVE` permissions, their request will be auomatically approved.
       tags:

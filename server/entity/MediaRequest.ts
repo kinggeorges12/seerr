@@ -30,11 +30,11 @@ import Media from './Media';
 import SeasonRequest from './SeasonRequest';
 import { User } from './User';
 
-export class RequestPermissionError extends Error {}
-export class QuotaRestrictedError extends Error {}
-export class DuplicateMediaRequestError extends Error {}
-export class NoSeasonsAvailableError extends Error {}
-export class BlacklistedMediaError extends Error {}
+export class RequestPermissionError extends Error { }
+export class QuotaRestrictedError extends Error { }
+export class DuplicateMediaRequestError extends Error { }
+export class NoSeasonsAvailableError extends Error { }
+export class BlacklistedMediaError extends Error { }
 
 type MediaRequestOptions = {
   isAutoRequest?: boolean;
@@ -87,8 +87,7 @@ export class MediaRequest {
       )
     ) {
       throw new RequestPermissionError(
-        `You do not have permission to make ${
-          requestBody.is4k ? '4K ' : ''
+        `You do not have permission to make ${requestBody.is4k ? '4K ' : ''
         }movie requests.`
       );
     } else if (
@@ -103,8 +102,7 @@ export class MediaRequest {
       )
     ) {
       throw new RequestPermissionError(
-        `You do not have permission to make ${
-          requestBody.is4k ? '4K ' : ''
+        `You do not have permission to make ${requestBody.is4k ? '4K ' : ''
         }series requests.`
       );
     }
@@ -162,7 +160,7 @@ export class MediaRequest {
       .createQueryBuilder('request')
       .leftJoin('request.media', 'media')
       .leftJoinAndSelect('request.requestedBy', 'user')
-      .where('request.is4k = :is4k', { is4k: requestBody.is4k })
+      .where('request.is4k = :is4k', { is4k: requestBody.is4k == true })
       .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
       .andWhere('media.mediaType = :mediaType', {
         mediaType: requestBody.mediaType,
@@ -382,8 +380,8 @@ export class MediaRequest {
       let requestedSeasons =
         requestBody.seasons === 'all'
           ? tmdbMediaShow.seasons
-              .filter((season) => season.season_number !== 0)
-              .map((season) => season.season_number)
+            .filter((season) => season.season_number !== 0)
+            .map((season) => season.season_number)
           : (requestBody.seasons as number[]);
       if (!settings.main.enableSpecialEpisodes) {
         requestedSeasons = requestedSeasons.filter((sn) => sn > 0);
@@ -419,9 +417,9 @@ export class MediaRequest {
             .filter(
               (season) =>
                 season[requestBody.is4k ? 'status4k' : 'status'] !==
-                  MediaStatus.UNKNOWN &&
+                MediaStatus.UNKNOWN &&
                 season[requestBody.is4k ? 'status4k' : 'status'] !==
-                  MediaStatus.DELETED
+                MediaStatus.DELETED
             )
             .map((season) => season.seasonNumber),
         ];
@@ -735,16 +733,14 @@ export class MediaRequest {
           event = `New ${entity.is4k ? '4K ' : ''}${mediaType} Request`;
           break;
         case Notification.MEDIA_AUTO_REQUESTED:
-          event = `${
-            entity.is4k ? '4K ' : ''
-          }${mediaType} Request Automatically Submitted`;
+          event = `${entity.is4k ? '4K ' : ''
+            }${mediaType} Request Automatically Submitted`;
           notifyAdmin = false;
           notifySystem = false;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
-          event = `${
-            entity.is4k ? '4K ' : ''
-          }${mediaType} Request Automatically Approved`;
+          event = `${entity.is4k ? '4K ' : ''
+            }${mediaType} Request Automatically Approved`;
           break;
         case Notification.MEDIA_FAILED:
           event = `${entity.is4k ? '4K ' : ''}${mediaType} Request Failed`;
@@ -760,9 +756,8 @@ export class MediaRequest {
           notifySystem,
           notifyUser: notifyAdmin ? undefined : entity.requestedBy,
           event,
-          subject: `${movie.title}${
-            movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
-          }`,
+          subject: `${movie.title}${movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+            }`,
           message: truncate(movie.overview, {
             length: 500,
             separator: /\s/,
@@ -779,9 +774,8 @@ export class MediaRequest {
           notifySystem,
           notifyUser: notifyAdmin ? undefined : entity.requestedBy,
           event,
-          subject: `${tv.name}${
-            tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
-          }`,
+          subject: `${tv.name}${tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+            }`,
           message: truncate(tv.overview, {
             length: 500,
             separator: /\s/,

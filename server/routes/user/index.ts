@@ -6,7 +6,8 @@ import { MediaServerType } from '@server/constants/server';
 import { UserType } from '@server/constants/user';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
-import { MediaRequest } from '@server/entity/MediaRequest';
+import { MediaRequest, RequestPermissionError, QuotaRestrictedError, DuplicateMediaRequestError, NoSeasonsAvailableError, BlacklistedMediaError } from '@server/entity/MediaRequest';
+import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
 import { User } from '@server/entity/User';
 import { UserPushSubscription } from '@server/entity/UserPushSubscription';
 import { Watchlist } from '@server/entity/Watchlist';
@@ -366,6 +367,45 @@ router.get<{ id: string }, UserRequestsResponse>(
       });
     } catch (e) {
       next({ status: 500, message: e.message });
+    }
+  }
+);
+
+router.post<never, MediaRequest, MediaRequestBody>(
+  '/:id/request',
+  isAuthenticated(Permission.ADMIN),
+  async (req, res, next) => {
+    try {
+      // Copied from /:id/requests
+      const user = await getRepository(User).findOneOrFail({
+        where: { id: Number(req.params.id) },
+      });
+
+      if (!user) {
+        return next({ status: 404, message: 'User not found.' });
+      }
+
+      const request = await MediaRequest.request(req.body, user);
+
+      return res.status(201).json(request);
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        return;
+      }
+
+      switch (error.constructor) {
+        case RequestPermissionError:
+        case QuotaRestrictedError:
+          return next({ status: 403, message: error.message });
+        case DuplicateMediaRequestError:
+          return next({ status: 409, message: error.message });
+        case NoSeasonsAvailableError:
+          return next({ status: 202, message: error.message });
+        case BlacklistedMediaError:
+          return next({ status: 403, message: error.message });
+        default:
+          return next({ status: 500, message: error.message });
+      }
     }
   }
 );
@@ -766,14 +806,14 @@ router.get<{ id: string }, UserWatchDataResponse>(
               (record) =>
                 (!!media.ratingKey &&
                   parseInt(media.ratingKey) ===
-                    (record.media_type === 'movie'
-                      ? record.rating_key
-                      : record.grandparent_rating_key)) ||
+                  (record.media_type === 'movie'
+                    ? record.rating_key
+                    : record.grandparent_rating_key)) ||
                 (!!media.ratingKey4k &&
                   parseInt(media.ratingKey4k) ===
-                    (record.media_type === 'movie'
-                      ? record.rating_key
-                      : record.grandparent_rating_key))
+                  (record.media_type === 'movie'
+                    ? record.rating_key
+                    : record.grandparent_rating_key))
             ),
         ]
       );
