@@ -1,6 +1,6 @@
 {
-  "name": "Seerr",
-  "short_name": "Seerr",
+  "name": "Jellyseerr",
+  "short_name": "Jellyseerr",
   "start_url": "./",
   "icons": [
     {

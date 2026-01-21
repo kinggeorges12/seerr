@@ -35,7 +35,6 @@ import { sortCrewPriority } from '@app/utils/creditHelpers';
 import defineMessages from '@app/utils/defineMessages';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { Disclosure, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import {
   ArrowRightCircleIcon,
   CogIcon,
@@ -45,7 +44,8 @@ import {
   MinusCircleIcon,
   PlayIcon,
   StarIcon,
-} from '@heroicons/react/24/solid';
+} from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import type { RTRating } from '@server/api/rating/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
@@ -118,7 +118,9 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   const intl = useIntl();
   const { locale } = useLocale();
   const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showManager, setShowManager] = useState(router.query.manage == '1');
+  const [showManager, setShowManager] = useState(
+    router.query.manage == '1' ? true : false
+  );
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [toggleWatchlist, setToggleWatchlist] = useState<boolean>(
@@ -154,7 +156,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   );
 
   useEffect(() => {
-    setShowManager(router.query.manage == '1');
+    setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
 
   const closeBlacklistModal = useCallback(
@@ -532,7 +534,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             src={
               data.posterPath
                 ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-                : '/images/seerr_poster_not_found.png'
+                : '/images/jellyseerr_poster_not_found.png'
             }
             alt=""
             sizes="100vw"

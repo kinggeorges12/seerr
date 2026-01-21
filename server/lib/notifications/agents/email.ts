@@ -7,8 +7,8 @@ import type { NotificationAgentEmail } from '@server/lib/settings';
 import { getSettings, NotificationAgentKey } from '@server/lib/settings';
 import logger from '@server/logger';
 import type { EmailOptions } from 'email-templates';
+import * as EmailValidator from 'email-validator';
 import path from 'path';
-import validator from 'validator';
 import { Notification, shouldSendAdminNotification } from '..';
 import type { NotificationAgent, NotificationPayload } from './agent';
 import { BaseAgent } from './agent';
@@ -48,9 +48,7 @@ class EmailAgent
     recipientEmail: string,
     recipientName?: string
   ): EmailOptions | undefined {
-    const settings = getSettings();
-    const { applicationUrl, applicationTitle } = settings.main;
-    const { embedPoster } = settings.notifications.agents.email;
+    const { applicationUrl, applicationTitle } = getSettings().main;
 
     if (type === Notification.TEST_NOTIFICATION) {
       return {
@@ -131,7 +129,7 @@ class EmailAgent
           body,
           mediaName: payload.subject,
           mediaExtra: payload.extra ?? [],
-          imageUrl: embedPoster ? payload.image : undefined,
+          imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           requestedBy: payload.request.requestedBy.displayName,
           actionUrl: applicationUrl
@@ -178,7 +176,7 @@ class EmailAgent
           issueComment: payload.comment?.message,
           mediaName: payload.subject,
           extra: payload.extra ?? [],
-          imageUrl: embedPoster ? payload.image : undefined,
+          imageUrl: payload.image,
           timestamp: new Date().toTimeString(),
           actionUrl: applicationUrl
             ? `${applicationUrl}/issues/${payload.issue.id}`
@@ -221,9 +219,7 @@ class EmailAgent
             this.getSettings(),
             payload.notifyUser.settings?.pgpKey
           );
-          if (
-            validator.isEmail(payload.notifyUser.email, { require_tld: false })
-          ) {
+          if (EmailValidator.validate(payload.notifyUser.email)) {
             await email.send(
               this.buildMessage(
                 type,
@@ -285,7 +281,7 @@ class EmailAgent
                 this.getSettings(),
                 user.settings?.pgpKey
               );
-              if (validator.isEmail(user.email, { require_tld: false })) {
+              if (EmailValidator.validate(user.email)) {
                 await email.send(
                   this.buildMessage(type, payload, user.email, user.displayName)
                 );

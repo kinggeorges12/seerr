@@ -84,7 +84,6 @@ const SettingsTabs = ({
           Select a Tab
         </label>
         <select
-          id="tabs"
           onChange={(e) => {
             router.push(e.target.value);
           }}

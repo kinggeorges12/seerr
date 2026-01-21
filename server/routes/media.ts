@@ -112,7 +112,7 @@ mediaRoutes.post<
       return next({ status: 404, message: 'Media does not exist.' });
     }
 
-    const is4k = String(req.body.is4k) === 'true';
+    const is4k = Boolean(req.body.is4k);
 
     switch (req.params.status) {
       case 'available':
@@ -145,16 +145,16 @@ mediaRoutes.post<
             message: 'Only series can be set to be partially available',
           });
         }
-        media[is4k ? 'status4k' : 'status'] = MediaStatus.PARTIALLY_AVAILABLE;
+        media.status = MediaStatus.PARTIALLY_AVAILABLE;
         break;
       case 'processing':
-        media[is4k ? 'status4k' : 'status'] = MediaStatus.PROCESSING;
+        media.status = MediaStatus.PROCESSING;
         break;
       case 'pending':
-        media[is4k ? 'status4k' : 'status'] = MediaStatus.PENDING;
+        media.status = MediaStatus.PENDING;
         break;
       case 'unknown':
-        media[is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
+        media.status = MediaStatus.UNKNOWN;
     }
 
     await mediaRepository.save(media);
@@ -198,7 +198,7 @@ mediaRoutes.delete(
         where: { id: Number(req.params.id) },
       });
 
-      const is4k = String(req.query.is4k) === 'true';
+      const is4k = req.query.is4k === 'true';
       const isMovie = media.mediaType === MediaType.MOVIE;
 
       let serviceSettings;
@@ -212,19 +212,18 @@ mediaRoutes.delete(
         );
       }
 
-      const specificServiceId = is4k ? media.serviceId4k : media.serviceId;
       if (
-        specificServiceId &&
-        specificServiceId >= 0 &&
-        serviceSettings?.id !== specificServiceId
+        media.serviceId &&
+        media.serviceId >= 0 &&
+        serviceSettings?.id !== media.serviceId
       ) {
         if (isMovie) {
           serviceSettings = settings.radarr.find(
-            (radarr) => radarr.id === specificServiceId
+            (radarr) => radarr.id === media.serviceId
           );
         } else {
           serviceSettings = settings.sonarr.find(
-            (sonarr) => sonarr.id === specificServiceId
+            (sonarr) => sonarr.id === media.serviceId
           );
         }
       }
@@ -258,7 +257,13 @@ mediaRoutes.delete(
       }
 
       if (isMovie) {
-        await (service as RadarrAPI).removeMovie(media.tmdbId);
+        await (service as RadarrAPI).removeMovie(
+          parseInt(
+            is4k
+              ? (media.externalServiceSlug4k as string)
+              : (media.externalServiceSlug as string)
+          )
+        );
       } else {
         const tmdb = new TheMovieDb();
         const series = await tmdb.getTvShow({ tvId: media.tmdbId });
@@ -266,7 +271,7 @@ mediaRoutes.delete(
         if (!tvdbId) {
           throw new Error('TVDB ID not found');
         }
-        await (service as SonarrAPI).removeSeries(tvdbId);
+        await (service as SonarrAPI).removeSerie(tvdbId);
       }
 
       return res.status(204).send();

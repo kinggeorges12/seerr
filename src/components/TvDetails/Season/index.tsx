@@ -60,7 +60,7 @@ const Season = ({ seasonNumber, tvId }: SeasonProps) => {
                     <CachedImage
                       type="tmdb"
                       className="rounded-lg object-contain"
-                      src={episode.stillPath}
+                      src={`https://image.tmdb.org/t/p/original/${episode.stillPath}`}
                       alt=""
                       fill
                     />

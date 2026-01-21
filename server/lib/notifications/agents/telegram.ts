@@ -65,9 +65,7 @@ class TelegramAgent
     type: Notification,
     payload: NotificationPayload
   ): Partial<TelegramMessagePayload | TelegramPhotoPayload> {
-    const settings = getSettings();
-    const { applicationUrl, applicationTitle } = settings.main;
-    const { embedPoster } = settings.notifications.agents.telegram;
+    const { applicationUrl, applicationTitle } = getSettings().main;
 
     /* eslint-disable no-useless-escape */
     let message = `\*${this.escapeText(
@@ -144,7 +142,7 @@ class TelegramAgent
     }
     /* eslint-enable */
 
-    return embedPoster && payload.image
+    return payload.image
       ? {
           photo: payload.image,
           caption: message,
@@ -162,7 +160,7 @@ class TelegramAgent
   ): Promise<boolean> {
     const settings = this.getSettings();
     const endpoint = `${this.baseUrl}bot${settings.options.botAPI}/${
-      settings.embedPoster && payload.image ? 'sendPhoto' : 'sendMessage'
+      payload.image ? 'sendPhoto' : 'sendMessage'
     }`;
     const notificationPayload = this.getNotificationPayload(type, payload);
 

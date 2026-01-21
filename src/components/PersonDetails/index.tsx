@@ -292,7 +292,6 @@ const PersonDetails = () => {
               </div>
             )}
           </div>
-          <div className="lg:hidden">{mediaTypePicker}</div>
           {data.biography && (
             <div className="relative text-left">
               {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
@@ -315,6 +314,7 @@ const PersonDetails = () => {
           )}
         </div>
       </div>
+      <div className="lg:hidden">{mediaTypePicker}</div>
       {data.knownForDepartment === 'Acting' ? [cast, crew] : [crew, cast]}
       {isLoading && <LoadingSpinner />}
     </>

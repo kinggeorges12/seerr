@@ -3,16 +3,16 @@ import type { Config } from '@docusaurus/types';
 import { themes as prismThemes } from 'prism-react-renderer';
 
 const config: Config = {
-  title: 'Seerr',
+  title: 'Jellyseerr',
   tagline: 'One Stop Solution for all your media request needs',
   favicon: 'img/favicon.ico',
 
-  url: 'https://docs.seerr.dev',
+  url: 'https://docs.jellyseerr.dev',
   baseUrl: '/',
   trailingSlash: false,
 
-  organizationName: 'seerr-team',
-  projectName: 'seerr',
+  organizationName: 'fallenbagel',
+  projectName: 'Jellyseerr',
   deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
@@ -31,8 +31,10 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/',
           path: '../docs',
-          editUrl: 'https://github.com/seerr-team/seerr/edit/develop/docs/',
+          editUrl:
+            'https://github.com/fallenbagel/jellyseerr/edit/develop/docs/',
         },
+        blog: false,
         pages: false,
         theme: {
           customCss: './src/css/custom.css',
@@ -63,17 +65,12 @@ const config: Config = {
     },
     navbar: {
       logo: {
-        alt: 'Seerr',
+        alt: 'Jellyseerr',
         src: 'img/logo.svg',
       },
       items: [
         {
-          to: 'blog',
-          label: 'Blog',
-          position: 'right',
-        },
-        {
-          href: 'https://github.com/seerr-team/seerr',
+          href: 'https://github.com/fallenbagel/jellyseerr',
           label: 'GitHub',
           position: 'right',
         },
@@ -92,33 +89,20 @@ const config: Config = {
           ],
         },
         {
-          title: 'Project',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/seerr-team/seerr',
-            },
-          ],
-        },
-        {
           title: 'Community',
           items: [
             {
               label: 'Discord',
-              href: 'https://discord.gg/seerr',
+              href: 'https://discord.gg/ckbvBtDJgC',
             },
             {
               label: 'Github Discussions',
-              href: 'https://github.com/seerr-team/seerr/discussions',
+              href: 'https://github.com/fallenbagel/jellyseerr/discussions',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Seerr. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Jellyseerr. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.shadesOfPurple,

@@ -122,8 +122,8 @@ const Login = () => {
         settings.currentSettings.localLogin &&
         (mediaServerLogin ? (
           <Button
-            key="seerr"
-            data-testid="seerr-login-button"
+            key="jellyseerr"
+            data-testid="jellyseerr-login-button"
             className="flex-1 bg-transparent"
             onClick={() => setMediaServerLogin(false)}
           >

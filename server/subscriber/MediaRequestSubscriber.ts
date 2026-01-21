@@ -292,17 +292,9 @@ export class MediaRequestSubscriber
         }
 
         if (radarrSettings.tagRequests) {
-          const radarrTags = await radarr.getTags();
-          // old tags had space around the hyphen
-          let userTag = radarrTags.find((v) =>
+          let userTag = (await radarr.getTags()).find((v) =>
             v.label.startsWith(entity.requestedBy.id + ' - ')
           );
-          // new tags do not have spaces around the hyphen, since spaces are not allowed anymore
-          if (!userTag) {
-            userTag = radarrTags.find((v) =>
-              v.label.startsWith(entity.requestedBy.id + '-')
-            );
-          }
           if (!userTag) {
             logger.info(`Requester has no active tag. Creating new`, {
               label: 'Media Request',
@@ -310,11 +302,11 @@ export class MediaRequestSubscriber
               mediaId: entity.media.id,
               userId: entity.requestedBy.id,
               newTag:
-                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
+                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
             });
             userTag = await radarr.createTag({
               label:
-                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
+                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
             });
           }
           if (userTag.id) {
@@ -341,11 +333,9 @@ export class MediaRequestSubscriber
             mediaId: entity.media.id,
           });
 
-          if (entity.status !== MediaRequestStatus.APPROVED) {
-            const requestRepository = getRepository(MediaRequest);
-            entity.status = MediaRequestStatus.APPROVED;
-            await requestRepository.save(entity);
-          }
+          const requestRepository = getRepository(MediaRequest);
+          entity.status = MediaRequestStatus.APPROVED;
+          await requestRepository.save(entity);
           return;
         }
 
@@ -507,11 +497,9 @@ export class MediaRequestSubscriber
             mediaId: entity.media.id,
           });
 
-          if (entity.status !== MediaRequestStatus.APPROVED) {
-            const requestRepository = getRepository(MediaRequest);
-            entity.status = MediaRequestStatus.APPROVED;
-            await requestRepository.save(entity);
-          }
+          const requestRepository = getRepository(MediaRequest);
+          entity.status = MediaRequestStatus.APPROVED;
+          await requestRepository.save(entity);
           return;
         }
 
@@ -613,17 +601,9 @@ export class MediaRequestSubscriber
         }
 
         if (sonarrSettings.tagRequests) {
-          const sonarrTags = await sonarr.getTags();
-          // old tags had space around the hyphen
-          let userTag = sonarrTags.find((v) =>
+          let userTag = (await sonarr.getTags()).find((v) =>
             v.label.startsWith(entity.requestedBy.id + ' - ')
           );
-          // new tags do not have spaces around the hyphen, since spaces are not allowed anymore
-          if (!userTag) {
-            userTag = sonarrTags.find((v) =>
-              v.label.startsWith(entity.requestedBy.id + '-')
-            );
-          }
           if (!userTag) {
             logger.info(`Requester has no active tag. Creating new`, {
               label: 'Media Request',
@@ -631,11 +611,11 @@ export class MediaRequestSubscriber
               mediaId: entity.media.id,
               userId: entity.requestedBy.id,
               newTag:
-                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
+                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
             });
             userTag = await sonarr.createTag({
               label:
-                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
+                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
             });
           }
           if (userTag.id) {

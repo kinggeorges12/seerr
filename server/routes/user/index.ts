@@ -269,19 +269,15 @@ router.delete<{ userId: number; endpoint: string }>(
     try {
       const userPushSubRepository = getRepository(UserPushSubscription);
 
-      const userPushSub = await userPushSubRepository.findOne({
-        relations: { user: true },
+      const userPushSub = await userPushSubRepository.findOneOrFail({
+        relations: {
+          user: true,
+        },
         where: {
           user: { id: req.params.userId },
           endpoint: req.params.endpoint,
         },
       });
-
-      // If not found, just return 204 to prevent push disable failure
-      // (rare scenario where user push sub does not exist)
-      if (!userPushSub) {
-        return res.status(204).send();
-      }
 
       await userPushSubRepository.remove(userPushSub);
       return res.status(204).send();
@@ -637,7 +633,7 @@ router.post(
             jellyfinUsername: jellyfinUser?.Name,
             jellyfinUserId: jellyfinUser?.Id,
             jellyfinDeviceId: Buffer.from(
-              `BOT_seerr_${jellyfinUser?.Name ?? ''}`
+              `BOT_jellyseerr_${jellyfinUser?.Name ?? ''}`
             ).toString('base64'),
             email: jellyfinUser?.Name,
             permissions: settings.main.defaultPermissions,

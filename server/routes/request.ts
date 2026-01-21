@@ -381,12 +381,6 @@ requestRoutes.get('/count', async (_req, res, next) => {
       )
       .getCount();
 
-    const completedCount = await query
-      .where('request.status = :requestStatus', {
-        requestStatus: MediaRequestStatus.COMPLETED,
-      })
-      .getCount();
-
     return res.status(200).json({
       total: totalCount,
       movie: movieCount,
@@ -396,7 +390,6 @@ requestRoutes.get('/count', async (_req, res, next) => {
       declined: declinedCount,
       processing: processingCount,
       available: availableCount,
-      completed: completedCount,
     });
   } catch (e) {
     logger.error('Something went wrong retrieving request counts', {

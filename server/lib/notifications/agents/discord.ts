@@ -109,9 +109,7 @@ class DiscordAgent
     type: Notification,
     payload: NotificationPayload
   ): DiscordRichEmbed {
-    const settings = getSettings();
-    const { applicationUrl } = settings.main;
-    const { embedPoster } = settings.notifications.agents.discord;
+    const { applicationUrl } = getSettings().main;
 
     const appUrl =
       applicationUrl || `http://localhost:${process.env.port || 5055}`;
@@ -225,11 +223,9 @@ class DiscordAgent
           }
         : undefined,
       fields,
-      thumbnail: embedPoster
-        ? {
-            url: payload.image,
-          }
-        : undefined,
+      thumbnail: {
+        url: payload.image,
+      },
     };
   }
 

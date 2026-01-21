@@ -15,14 +15,13 @@ const messages = defineMessages(
   'components.Settings.Notifications.NotificationsWebPush',
   {
     agentenabled: 'Enable Agent',
-    embedPoster: 'Embed Poster',
     webpushsettingssaved: 'Web push notification settings saved successfully!',
     webpushsettingsfailed: 'Web push notification settings failed to save.',
     toastWebPushTestSending: 'Sending web push test notification…',
     toastWebPushTestSuccess: 'Web push test notification sent!',
     toastWebPushTestFailed: 'Web push test notification failed to send.',
     httpsRequirement:
-      'In order to receive web push notifications, Seerr must be served over HTTPS.',
+      'In order to receive web push notifications, Jellyseerr must be served over HTTPS.',
   }
 );
 
@@ -56,13 +55,11 @@ const NotificationsWebPush = () => {
       <Formik
         initialValues={{
           enabled: data.enabled,
-          embedPoster: data.embedPoster,
         }}
         onSubmit={async (values) => {
           try {
             await axios.post('/api/v1/settings/notifications/webpush', {
               enabled: values.enabled,
-              embedPoster: values.embedPoster,
               options: {},
             });
             mutate('/api/v1/settings/public');
@@ -80,7 +77,7 @@ const NotificationsWebPush = () => {
           }
         }}
       >
-        {({ isSubmitting, values }) => {
+        {({ isSubmitting }) => {
           const testSettings = async () => {
             setIsTesting(true);
             let toastId: string | undefined;
@@ -97,7 +94,6 @@ const NotificationsWebPush = () => {
               );
               await axios.post('/api/v1/settings/notifications/webpush/test', {
                 enabled: true,
-                embedPoster: values.embedPoster,
                 options: {},
               });
 
@@ -130,15 +126,6 @@ const NotificationsWebPush = () => {
                 </label>
                 <div className="form-input-area">
                   <Field type="checkbox" id="enabled" name="enabled" />
-                </div>
-              </div>
-              <div className="form-row">
-                <label htmlFor="embedPoster" className="checkbox-label">
-                  {intl.formatMessage(messages.embedPoster)}
-                  <span className="label-required">*</span>
-                </label>
-                <div className="form-input-area">
-                  <Field type="checkbox" id="embedPoster" name="embedPoster" />
                 </div>
               </div>
               <div className="actions">

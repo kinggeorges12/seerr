@@ -63,9 +63,7 @@ class SlackAgent
     type: Notification,
     payload: NotificationPayload
   ): SlackBlockEmbed {
-    const settings = getSettings();
-    const { applicationUrl, applicationTitle } = settings.main;
-    const { embedPoster } = settings.notifications.agents.slack;
+    const { applicationUrl, applicationTitle } = getSettings().main;
 
     const fields: EmbedField[] = [];
 
@@ -161,14 +159,13 @@ class SlackAgent
           type: 'mrkdwn',
           text: payload.message,
         },
-        accessory:
-          embedPoster && payload.image
-            ? {
-                type: 'image',
-                image_url: payload.image,
-                alt_text: payload.subject,
-              }
-            : undefined,
+        accessory: payload.image
+          ? {
+              type: 'image',
+              image_url: payload.image,
+              alt_text: payload.subject,
+            }
+          : undefined,
       });
     }
 
@@ -192,7 +189,7 @@ class SlackAgent
         type: 'actions',
         elements: [
           {
-            action_id: 'open-in-seerr',
+            action_id: 'open-in-jellyseerr',
             type: 'button',
             url,
             text: {

@@ -17,10 +17,9 @@ const messages = defineMessages(
   'components.Settings.Notifications.NotificationsPushover',
   {
     agentenabled: 'Enable Agent',
-    embedPoster: 'Embed Poster',
     accessToken: 'Application API Token',
     accessTokenTip:
-      '<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with Seerr',
+      '<ApplicationRegistrationLink>Register an application</ApplicationRegistrationLink> for use with Jellyseerr',
     userToken: 'User or Group Key',
     userTokenTip:
       'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
@@ -87,7 +86,6 @@ const NotificationsPushover = () => {
     <Formik
       initialValues={{
         enabled: data?.enabled,
-        embedPoster: data?.embedPoster,
         types: data?.types,
         accessToken: data?.options.accessToken,
         userToken: data?.options.userToken,
@@ -98,7 +96,6 @@ const NotificationsPushover = () => {
         try {
           await axios.post('/api/v1/settings/notifications/pushover', {
             enabled: values.enabled,
-            embedPoster: values.embedPoster,
             types: values.types,
             options: {
               accessToken: values.accessToken,
@@ -145,7 +142,6 @@ const NotificationsPushover = () => {
             );
             await axios.post('/api/v1/settings/notifications/pushover/test', {
               enabled: true,
-              embedPoster: values.embedPoster,
               types: values.types,
               options: {
                 accessToken: values.accessToken,
@@ -183,14 +179,6 @@ const NotificationsPushover = () => {
               </label>
               <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
-              </div>
-            </div>
-            <div className="form-row">
-              <label htmlFor="embedPoster" className="checkbox-label">
-                {intl.formatMessage(messages.embedPoster)}
-              </label>
-              <div className="form-input-area">
-                <Field type="checkbox" id="embedPoster" name="embedPoster" />
               </div>
             </div>
             <div className="form-row">

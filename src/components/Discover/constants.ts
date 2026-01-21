@@ -99,7 +99,6 @@ export const QueryFilterOptions = z.object({
   studio: z.string().optional(),
   genre: z.string().optional(),
   keywords: z.string().optional(),
-  excludeKeywords: z.string().optional(),
   language: z.string().optional(),
   withRuntimeGte: z.string().optional(),
   withRuntimeLte: z.string().optional(),
@@ -160,10 +159,6 @@ export const prepareFilterValues = (
 
   if (values.keywords) {
     filterValues.keywords = values.keywords;
-  }
-
-  if (values.excludeKeywords) {
-    filterValues.excludeKeywords = values.excludeKeywords;
   }
 
   if (values.language) {

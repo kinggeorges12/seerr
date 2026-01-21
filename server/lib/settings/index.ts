@@ -100,16 +100,6 @@ interface Quota {
   quotaDays?: number;
 }
 
-export enum MetadataProviderType {
-  TMDB = 'tmdb',
-  TVDB = 'tvdb',
-}
-
-export interface MetadataSettings {
-  tv: MetadataProviderType;
-  anime: MetadataProviderType;
-}
-
 export interface ProxySettings {
   enabled: boolean;
   hostname: string;
@@ -148,29 +138,11 @@ export interface MainSettings {
   youtubeUrl: string;
 }
 
-export interface ProxySettings {
-  enabled: boolean;
-  hostname: string;
-  port: number;
-  useSsl: boolean;
-  user: string;
-  password: string;
-  bypassFilter: string;
-  bypassLocalAddresses: boolean;
-}
-
-export interface DnsCacheSettings {
-  enabled: boolean;
-  forceMinTtl?: number;
-  forceMaxTtl?: number;
-}
-
 export interface NetworkSettings {
   csrfProtection: boolean;
   forceIpv4First: boolean;
   trustProxy: boolean;
   proxy: ProxySettings;
-  dnsCache: DnsCacheSettings;
 }
 
 interface PublicSettings {
@@ -207,7 +179,6 @@ interface FullPublicSettings extends PublicSettings {
 
 export interface NotificationAgentConfig {
   enabled: boolean;
-  embedPoster: boolean;
   types?: number;
   options: Record<string, unknown>;
 }
@@ -275,7 +246,6 @@ export interface NotificationAgentWebhook extends NotificationAgentConfig {
     webhookUrl: string;
     jsonPayload: string;
     authHeader?: string;
-    supportVariables?: boolean;
   };
 }
 
@@ -362,8 +332,6 @@ export interface AllSettings {
   notifications: NotificationSettings;
   jobs: Record<JobId, JobSettings>;
   network: NetworkSettings;
-  metadataSettings: MetadataSettings;
-  migrations: string[];
 }
 
 const SETTINGS_PATH = process.env.CONFIG_DIRECTORY
@@ -380,7 +348,7 @@ class Settings {
       vapidPublic: '',
       main: {
         apiKey: '',
-        applicationTitle: 'Seerr',
+        applicationTitle: 'Jellyseerr',
         applicationUrl: '',
         cacheImages: false,
         defaultPermissions: Permission.REQUEST,
@@ -424,10 +392,6 @@ class Settings {
         apiKey: '',
       },
       tautulli: {},
-      metadataSettings: {
-        tv: MetadataProviderType.TMDB,
-        anime: MetadataProviderType.TMDB,
-      },
       radarr: [],
       sonarr: [],
       public: {
@@ -437,7 +401,6 @@ class Settings {
         agents: {
           email: {
             enabled: false,
-            embedPoster: true,
             options: {
               userEmailRequired: false,
               emailFrom: '',
@@ -447,12 +410,11 @@ class Settings {
               ignoreTls: false,
               requireTls: false,
               allowSelfSigned: false,
-              senderName: 'Seerr',
+              senderName: 'Jellyseerr',
             },
           },
           discord: {
             enabled: false,
-            embedPoster: true,
             types: 0,
             options: {
               webhookUrl: '',
@@ -462,7 +424,6 @@ class Settings {
           },
           slack: {
             enabled: false,
-            embedPoster: true,
             types: 0,
             options: {
               webhookUrl: '',
@@ -470,7 +431,6 @@ class Settings {
           },
           telegram: {
             enabled: false,
-            embedPoster: true,
             types: 0,
             options: {
               botAPI: '',
@@ -481,7 +441,6 @@ class Settings {
           },
           pushbullet: {
             enabled: false,
-            embedPoster: false,
             types: 0,
             options: {
               accessToken: '',
@@ -489,7 +448,6 @@ class Settings {
           },
           pushover: {
             enabled: false,
-            embedPoster: true,
             types: 0,
             options: {
               accessToken: '',
@@ -499,7 +457,6 @@ class Settings {
           },
           webhook: {
             enabled: false,
-            embedPoster: true,
             types: 0,
             options: {
               webhookUrl: '',
@@ -509,12 +466,10 @@ class Settings {
           },
           webpush: {
             enabled: false,
-            embedPoster: true,
             options: {},
           },
           gotify: {
             enabled: false,
-            embedPoster: false,
             types: 0,
             options: {
               url: '',
@@ -524,7 +479,6 @@ class Settings {
           },
           ntfy: {
             enabled: false,
-            embedPoster: true,
             types: 0,
             options: {
               url: '',
@@ -588,13 +542,7 @@ class Settings {
           bypassFilter: '',
           bypassLocalAddresses: true,
         },
-        dnsCache: {
-          enabled: false,
-          forceMinTtl: 0,
-          forceMaxTtl: -1,
-        },
       },
-      migrations: [],
     };
     if (initialSettings) {
       this.data = merge(this.data, initialSettings);
@@ -631,14 +579,6 @@ class Settings {
 
   set tautulli(data: TautulliSettings) {
     this.data.tautulli = data;
-  }
-
-  get metadataSettings(): MetadataSettings {
-    return this.data.metadataSettings;
-  }
-
-  set metadataSettings(data: MetadataSettings) {
-    this.data.metadataSettings = data;
   }
 
   get radarr(): RadarrSettings[] {
@@ -724,14 +664,6 @@ class Settings {
     this.data.network = data;
   }
 
-  get migrations(): string[] {
-    return this.data.migrations;
-  }
-
-  set migrations(data: string[]) {
-    this.data.migrations = data;
-  }
-
   get clientId(): string {
     return this.data.clientId;
   }
@@ -764,13 +696,9 @@ class Settings {
    * This will load settings from file unless an optional argument of the object structure
    * is passed in.
    * @param overrideSettings If passed in, will override all existing settings with these
-   * @param raw If true, will load the settings without running migrations or generating missing
    * values
    */
-  public async load(
-    overrideSettings?: AllSettings,
-    raw = false
-  ): Promise<Settings> {
+  public async load(overrideSettings?: AllSettings): Promise<Settings> {
     if (overrideSettings) {
       this.data = overrideSettings;
       return this;
@@ -783,12 +711,10 @@ class Settings {
       await this.save();
     }
 
-    if (data && !raw) {
+    if (data) {
       const parsedJson = JSON.parse(data);
       const migratedData = await runMigrations(parsedJson, SETTINGS_PATH);
       this.data = merge(this.data, migratedData);
-    } else if (data) {
-      this.data = JSON.parse(data);
     }
 
     // generate keys and ids if it's missing

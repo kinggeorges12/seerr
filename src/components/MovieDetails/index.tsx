@@ -99,7 +99,7 @@ const messages = defineMessages('components.MovieDetails', {
   rtcriticsscore: 'Rotten Tomatoes Tomatometer',
   rtaudiencescore: 'Rotten Tomatoes Audience Score',
   tmdbuserscore: 'TMDB User Score',
-  imdbuserscore: 'IMDB User Score – votes: {formattedCount}',
+  imdbuserscore: 'IMDB User Score',
   watchlistSuccess: '<strong>{title}</strong> added to watchlist successfully!',
   watchlistDeleted:
     '<strong>{title}</strong> Removed from watchlist successfully!',
@@ -490,7 +490,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
             src={
               data.posterPath
                 ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterPath}`
-                : '/images/seerr_poster_not_found.png'
+                : '/images/jellyseerr_poster_not_found.png'
             }
             alt=""
             sizes="100vw"
@@ -812,18 +812,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                     </Tooltip>
                   )}
                 {ratingData?.imdb?.criticsScore && (
-                  <Tooltip
-                    content={intl.formatMessage(messages.imdbuserscore, {
-                      formattedCount: intl.formatNumber(
-                        ratingData.imdb.criticsScoreCount,
-                        {
-                          notation: 'compact',
-                          compactDisplay: 'short',
-                          maximumFractionDigits: 1,
-                        }
-                      ),
-                    })}
-                  >
+                  <Tooltip content={intl.formatMessage(messages.imdbuserscore)}>
                     <a
                       href={ratingData.imdb.url}
                       className="media-rating"

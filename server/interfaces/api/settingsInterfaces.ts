@@ -1,4 +1,3 @@
-import type { DnsEntries, DnsStats } from 'dns-caching';
 import type { PaginatedResponse } from './common';
 
 export type LogMessage = {
@@ -65,10 +64,6 @@ export interface CacheItem {
 export interface CacheResponse {
   apiCaches: CacheItem[];
   imageCache: Record<'tmdb' | 'avatar', { size: number; imageCount: number }>;
-  dnsCache: {
-    stats: DnsStats | undefined;
-    entries: DnsEntries | undefined;
-  };
 }
 
 export interface StatusResponse {

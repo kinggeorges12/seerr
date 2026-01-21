@@ -8,7 +8,6 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import validator from 'validator';
 import * as Yup from 'yup';
 
 const messages = defineMessages('components.Login', {
@@ -91,11 +90,7 @@ function JellyfinSetup({
         (value) => !value || !value.endsWith('/')
       ),
     email: Yup.string()
-      .test(
-        'email',
-        intl.formatMessage(messages.validationemailformat),
-        (value) => !value || validator.isEmail(value, { require_tld: false })
-      )
+      .email(intl.formatMessage(messages.validationemailformat))
       .required(intl.formatMessage(messages.validationemailrequired)),
     username: Yup.string().required(
       intl.formatMessage(messages.validationusernamerequired)

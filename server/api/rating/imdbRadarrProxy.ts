@@ -145,7 +145,6 @@ export interface IMDBRating {
   title: string;
   url: string;
   criticsScore: number;
-  criticsScoreCount: number;
 }
 
 /**
@@ -188,7 +187,6 @@ class IMDBRadarrProxy extends ExternalAPI {
         title: data[0].Title,
         url: `https://www.imdb.com/title/${data[0].ImdbId}`,
         criticsScore: data[0].MovieRatings.Imdb.Value,
-        criticsScoreCount: data[0].MovieRatings.Imdb.Count,
       };
     } catch (e) {
       throw new Error(

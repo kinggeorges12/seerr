@@ -17,7 +17,7 @@ import useSWR from 'swr';
 
 const messages = defineMessages('components.Settings.SettingsAbout', {
   about: 'About',
-  aboutseerr: 'About Seerr',
+  overseerrinformation: 'About Jellyseerr',
   version: 'Version',
   totalmedia: 'Total Media',
   totalrequests: 'Total Requests',
@@ -25,15 +25,17 @@ const messages = defineMessages('components.Settings.SettingsAbout', {
   githubdiscussions: 'GitHub Discussions',
   timezone: 'Time Zone',
   appDataPath: 'Data Directory',
-  supportseerr: 'Support Seerr',
-  contribute: 'Make a Contribution',
+  supportoverseerr: 'Support Overseerr',
+  supportjellyseerr: 'Support Jellyseerr',
+  helppaycoffee: 'Help Pay for Coffee',
   documentation: 'Documentation',
+  preferredmethod: 'Preferred',
   outofdate: 'Out of Date',
   uptodate: 'Up to Date',
   betawarning:
     'This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
   runningDevelop:
-    'You are running the <code>develop</code> branch of Seerr, which is only recommended for those contributing to development or assisting with bleeding-edge testing.',
+    'You are running the <code>develop</code> branch of Jellyseerr, which is only recommended for those contributing to development or assisting with bleeding-edge testing.',
 });
 
 const SettingsAbout = () => {
@@ -71,7 +73,7 @@ const SettingsAbout = () => {
             </p>
             <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
               <a
-                href="http://github.com/seerr-team/seerr"
+                href="http://github.com/fallenbagel/jellyseerr"
                 className="whitespace-nowrap font-medium text-gray-100 transition duration-150 ease-in-out hover:text-white"
                 target="_blank"
                 rel="noreferrer"
@@ -83,7 +85,7 @@ const SettingsAbout = () => {
         </div>
       </div>
       <div className="section">
-        <List title={intl.formatMessage(messages.aboutseerr)}>
+        <List title={intl.formatMessage(messages.overseerrinformation)}>
           {data.version.startsWith('develop-') && (
             <Alert
               title={intl.formatMessage(messages.runningDevelop, {
@@ -105,8 +107,8 @@ const SettingsAbout = () => {
                 <a
                   href={
                     data.version.startsWith('develop-')
-                      ? `https://github.com/seerr-team/seerr/compare/${status.commitTag}...develop`
-                      : 'https://github.com/seerr-team/seerr/releases'
+                      ? `https://github.com/fallenbagel/jellyseerr/compare/${status.commitTag}...develop`
+                      : 'https://github.com/fallenbagel/jellyseerr/releases'
                   }
                   target="_blank"
                   rel="noopener noreferrer"
@@ -122,8 +124,8 @@ const SettingsAbout = () => {
                 <a
                   href={
                     data.version.startsWith('develop-')
-                      ? 'https://github.com/seerr-team/seerr/commits/develop'
-                      : 'https://github.com/seerr-team/seerr/releases'
+                      ? 'https://github.com/fallenbagel/jellyseerr/commits/develop'
+                      : 'https://github.com/fallenbagel/jellyseerr/releases'
                   }
                   target="_blank"
                   rel="noopener noreferrer"
@@ -157,47 +159,81 @@ const SettingsAbout = () => {
         <List title={intl.formatMessage(messages.gettingsupport)}>
           <List.Item title={intl.formatMessage(messages.documentation)}>
             <a
-              href="https://docs.seerr.dev"
+              href="https://docs.jellyseerr.dev"
               target="_blank"
               rel="noreferrer"
               className="text-indigo-500 transition duration-300 hover:underline"
             >
-              https://docs.seerr.dev
+              https://docs.jellyseerr.dev
             </a>
           </List.Item>
           <List.Item title={intl.formatMessage(messages.githubdiscussions)}>
             <a
-              href="https://github.com/seerr-team/seerr/discussions"
+              href="https://github.com/fallenbagel/jellyseerr/discussions"
               target="_blank"
               rel="noreferrer"
               className="text-indigo-500 transition duration-300 hover:underline"
             >
-              https://github.com/seerr-team/seerr/discussions
+              https://github.com/fallenbagel/jellyseerr/discussions
             </a>
           </List.Item>
           <List.Item title="Discord">
             <a
-              href="https://discord.gg/seerr"
+              href="https://discord.gg/ckbvBtDJgC"
               target="_blank"
               rel="noreferrer"
               className="text-indigo-500 transition duration-300 hover:underline"
             >
-              https://discord.gg/seerr
+              https://discord.gg/ckbvBtDJgC
             </a>
           </List.Item>
         </List>
       </div>
       <div className="section">
-        <List title={intl.formatMessage(messages.supportseerr)}>
-          <List.Item title={intl.formatMessage(messages.contribute)}>
+        <List title={intl.formatMessage(messages.supportoverseerr)}>
+          <List.Item
+            title={`${intl.formatMessage(messages.helppaycoffee)} ☕️`}
+          >
             <a
-              href="https://opencollective.com/seerr"
+              href="https://github.com/sponsors/sct"
               target="_blank"
               rel="noreferrer"
               className="text-indigo-500 transition duration-300 hover:underline"
             >
-              https://opencollective.com/seerr
+              https://github.com/sponsors/sct
             </a>
+            <Badge className="ml-2">
+              {intl.formatMessage(messages.preferredmethod)}
+            </Badge>
+          </List.Item>
+          <List.Item title="">
+            <a
+              href="https://patreon.com/overseerr"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 transition duration-300 hover:underline"
+            >
+              https://patreon.com/overseerr
+            </a>
+          </List.Item>
+        </List>
+      </div>
+      <div className="section">
+        <List title={intl.formatMessage(messages.supportjellyseerr)}>
+          <List.Item
+            title={`${intl.formatMessage(messages.helppaycoffee)} ☕️`}
+          >
+            <a
+              href="https://www.buymeacoffee.com/fallen.bagel"
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-500 transition duration-300 hover:underline"
+            >
+              https://www.buymeacoffee.com/fallen.bagel
+            </a>
+            <Badge className="ml-2">
+              {intl.formatMessage(messages.preferredmethod)}
+            </Badge>
           </List.Item>
         </List>
       </div>

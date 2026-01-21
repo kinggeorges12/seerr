@@ -5,7 +5,6 @@ import { Transition } from '@headlessui/react';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
 import { useIntl } from 'react-intl';
-import validator from 'validator';
 import * as Yup from 'yup';
 
 const messages = defineMessages('components.Login', {
@@ -37,11 +36,7 @@ const AddEmailModal: React.FC<AddEmailModalProps> = ({
 
   const EmailSettingsSchema = Yup.object().shape({
     email: Yup.string()
-      .test(
-        'email',
-        intl.formatMessage(messages.validationEmailFormat),
-        (value) => !value || validator.isEmail(value, { require_tld: false })
-      )
+      .email(intl.formatMessage(messages.validationEmailFormat))
       .required(intl.formatMessage(messages.validationEmailRequired)),
   });
 

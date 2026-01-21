@@ -270,7 +270,6 @@ notificationRoutes.get('/webhook', (_req, res) => {
 
   const response: typeof webhookSettings = {
     enabled: webhookSettings.enabled,
-    embedPoster: webhookSettings.embedPoster,
     types: webhookSettings.types,
     options: {
       ...webhookSettings.options,
@@ -279,7 +278,6 @@ notificationRoutes.get('/webhook', (_req, res) => {
           'utf8'
         )
       ),
-      supportVariables: webhookSettings.options.supportVariables ?? false,
     },
   };
 
@@ -293,7 +291,6 @@ notificationRoutes.post('/webhook', async (req, res, next) => {
 
     settings.notifications.agents.webhook = {
       enabled: req.body.enabled,
-      embedPoster: req.body.embedPoster,
       types: req.body.types,
       options: {
         jsonPayload: Buffer.from(req.body.options.jsonPayload).toString(
@@ -301,7 +298,6 @@ notificationRoutes.post('/webhook', async (req, res, next) => {
         ),
         webhookUrl: req.body.options.webhookUrl,
         authHeader: req.body.options.authHeader,
-        supportVariables: req.body.options.supportVariables ?? false,
       },
     };
     await settings.save();
@@ -325,7 +321,6 @@ notificationRoutes.post('/webhook/test', async (req, res, next) => {
 
     const testBody = {
       enabled: req.body.enabled,
-      embedPoster: req.body.embedPoster,
       types: req.body.types,
       options: {
         jsonPayload: Buffer.from(req.body.options.jsonPayload).toString(
@@ -333,7 +328,6 @@ notificationRoutes.post('/webhook/test', async (req, res, next) => {
         ),
         webhookUrl: req.body.options.webhookUrl,
         authHeader: req.body.options.authHeader,
-        supportVariables: req.body.options.supportVariables ?? false,
       },
     };
 

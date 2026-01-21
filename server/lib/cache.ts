@@ -9,8 +9,7 @@ export type AvailableCacheIds =
   | 'github'
   | 'plexguid'
   | 'plextv'
-  | 'plexwatchlist'
-  | 'tvdb';
+  | 'plexwatchlist';
 
 const DEFAULT_TTL = 300;
 const DEFAULT_CHECK_PERIOD = 120;
@@ -71,10 +70,6 @@ class CacheManager {
       checkPeriod: 60,
     }),
     plexwatchlist: new Cache('plexwatchlist', 'Plex Watchlist'),
-    tvdb: new Cache('tvdb', 'The TVDB API', {
-      stdTtl: 21600,
-      checkPeriod: 60 * 30,
-    }),
   };
 
   public getCache(id: AvailableCacheIds): Cache {

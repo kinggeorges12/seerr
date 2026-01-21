@@ -150,31 +150,6 @@ const ManageSlideOver = ({
     return false;
   };
 
-  const isDefault4kService = () => {
-    if (data.mediaInfo) {
-      if (data.mediaInfo.mediaType === MediaType.MOVIE) {
-        return (
-          radarrData?.find(
-            (radarr) =>
-              radarr.isDefault &&
-              radarr.is4k &&
-              radarr.id === data.mediaInfo?.serviceId4k
-          ) !== undefined
-        );
-      } else {
-        return (
-          sonarrData?.find(
-            (sonarr) =>
-              sonarr.isDefault &&
-              sonarr.is4k &&
-              sonarr.id === data.mediaInfo?.serviceId4k
-          ) !== undefined
-        );
-      }
-    }
-    return false;
-  };
-
   const markAvailable = async (is4k = false) => {
     if (data.mediaInfo) {
       await axios.post(`/api/v1/media/${data.mediaInfo?.id}/available`, {
@@ -597,7 +572,7 @@ const ManageSlideOver = ({
                         </span>
                       </Button>
                     </a>
-                    {isDefault4kService() && (
+                    {isDefaultService() && (
                       <div>
                         <ConfirmButton
                           onClick={() => deleteMediaFile(true)}

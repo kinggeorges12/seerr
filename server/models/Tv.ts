@@ -124,7 +124,7 @@ const mapEpisodeResult = (episode: TmdbTvEpisodeResult): Episode => ({
   seasonNumber: episode.season_number,
   showId: episode.show_id,
   voteAverage: episode.vote_average,
-  voteCount: episode.vote_count,
+  voteCount: episode.vote_cuont,
   stillPath: episode.still_path,
 });
 
