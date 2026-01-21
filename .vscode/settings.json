@@ -1,5 +1,5 @@
 {
-  "eslint.enable": true,
+  "eslint.enable": false,
   "eslint.validate": [
     "javascript",
     "javascriptreact",
@@ -15,7 +15,7 @@
       "database": "./config/db/db.sqlite3"
     }
   ],
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "files.associations": {
     "globals.css": "tailwindcss"
@@ -23,5 +23,5 @@
   "i18n-ally.localesPaths": [
     "src/i18n/locale"
   ],
-  "yaml.format.singleQuote": true
+  "yaml.format.singleQuote": false
 }
