@@ -371,14 +371,14 @@ router.get<{ id: string }, UserRequestsResponse>(
   }
 );
 
-router.post<never, MediaRequest, MediaRequestBody>(
-  '/:id/request',
+router.post<{ userId: number }, MediaRequest, MediaRequestBody>(
+  '/:userId/request',
   isAuthenticated(Permission.ADMIN),
   async (req, res, next) => {
     try {
       // Copied from /:id/requests
       const user = await getRepository(User).findOneOrFail({
-        where: { id: Number(req.params.id) },
+        where: { id: Number(req.params.userId) },
       });
 
       if (!user) {
