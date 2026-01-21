@@ -1,0 +1,1 @@
+docker build --build-arg COMMIT_TAG=$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_VERSION=1.0.0 -t kinggeorges12/jellyseerr:2.7.3-jb2 .
